@@ -59,25 +59,25 @@ public class LoginServiceImpl extends RemoteServiceServlet implements
 	@Override
 	public List<CSContact> pull(String name) {
 		User user = dao.getByUserName(name);
-		ArrayList<Contact> contacts;
+		List<Contact> contacts;
 		Contact contact;
 		ArrayList<CSContact> csContacts = new ArrayList<CSContact>();
 		CSContact csContact = null;
-		ArrayList<Phone> phones;
+		List<Phone> phones;
 		Phone phone;
 		ArrayList<CSPhone> csPhones;
 		CSPhone csPhone;
 		if (user != null) {
 			System.out.println("PULL\nUsername: " + user.getName());
 			// /Get all contacts of user
-			contacts = (ArrayList<Contact>) contactDao.getContactsByUser(user);
+			contacts = contactDao.getContactsByUser(user);
 			// /Copy contact to cscontact object
 			for (int i = 0; i < contacts.size(); i++) {
 				contact = contacts.get(i);
 				System.out.print(contact.getName() + " ");
 				csContact = CSConverter.toCSContact(contact);
 				// /Get all phones of contact
-				phones = (ArrayList<Phone>) phoneDao
+				phones = phoneDao
 						.getPhonesByContact(contact);
 				csPhones = new ArrayList<CSPhone>();
 				// /Copy phone to csphone object
@@ -142,6 +142,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements
 				for (int j = 0; j < csPhones.size(); j++) {
 					csPhone = csPhones.get(j);
 					if (csPhone.getStatus() == 1) {
+						contact.setUser(Key.create(user));
 						phone = CSConverter.toPhone(csPhone);
 						phone.setContact(Key.create(contact));
 						phoneDao.addPhone(phone, contact);

@@ -1,17 +1,17 @@
-048C5902CBDE6AD6F8030113DFD3E7E1.cache.js
-mobile.user.agent mobilesafari
-phonegap.env yes
-
-5119C175145E722D9F08917D3FF1D771.cache.js
-mobile.user.agent mobilesafari
+103469FFCB57C61FD3171DB373D6D168.cache.js
+mobile.user.agent not_mobile
 phonegap.env no
 
-57698B53E3FA7C6FC264A9A9F88C82DE.cache.js
+14EFDD143C2D70959416A5DDEFD0E7AC.cache.js
 mobile.user.agent not_mobile
 phonegap.env yes
 
-67B03EC53119EDAA2A14CD02343324A2.cache.js
-mobile.user.agent not_mobile
+47A324AB1AAAC8D6FE898625A543A563.cache.js
+mobile.user.agent mobilesafari
 phonegap.env no
+
+87F57AA9AD89758E6BC6E67EC17FE8CC.cache.js
+mobile.user.agent mobilesafari
+phonegap.env yes
 
 Devmode:devmode.js

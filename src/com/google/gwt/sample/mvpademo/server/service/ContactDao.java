@@ -24,7 +24,11 @@ public class ContactDao {
 		System.out.println("Fail add contact: " + contact.getName());
 		return "";
 	}
-
+	
+	Contact getContactByName(String name, User user){
+		return ofy().load().type(Contact.class).parent(user).id(name).get();
+	}
+	
 	List<Contact> getContactsByUser(User user) {
 		User retUser;
 		if ((retUser = ofy().load().type(User.class).id(user.getName()).get()) == null) {
@@ -33,7 +37,7 @@ public class ContactDao {
 		}
 		List<Contact> contacts = ofy().load().type(Contact.class)
 				.ancestor(retUser).list();
-		System.out.print("Found " + contacts.size() + " contacts");
+		System.out.println("Found " + contacts.size() + " contacts");
 		return contacts;
 	}
 	

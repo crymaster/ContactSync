@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.gwt.sample.mvpademo.client.ClientFactoryImpl;
 import com.google.gwt.sample.mvpademo.rpcobject.CSContact;
 import com.google.gwt.sample.mvpademo.rpcobject.CSUser;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.googlecode.gwtphonegap.client.file.DirectoryEntry;
 import com.googlecode.gwtphonegap.client.file.DirectoryReader;
 import com.googlecode.gwtphonegap.client.file.EntryBase;
@@ -19,7 +20,6 @@ import com.googlecode.gwtphonegap.client.file.FileWriter;
 import com.googlecode.gwtphonegap.client.file.Flags;
 import com.googlecode.gwtphonegap.client.file.ReaderCallback;
 import com.googlecode.gwtphonegap.client.file.WriterCallback;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.googlecode.gwtphonegap.collection.shared.LightArray;
 
 public class FileUtil {

@@ -1,5 +1,6 @@
 package com.google.gwt.sample.mvpademo.client.rpc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.sample.mvpademo.rpcobject.CSContact;

@@ -35,15 +35,15 @@ public class PhoneDao {
 	}
 
 	List<Phone> getPhonesByContact(Contact contact) {
-		Contact retContact;
-		if ((retContact = ofy().load().type(Contact.class)
-				.id(contact.getName()).get()) == null) {
-			System.out.println("Contact not found");
-			return null;
-		}
+//		Contact retContact;
+//		if ((retContact = ofy().load().type(Contact.class)
+//				.parent(contact.getUser()).id(contact.getName()).get()) == null) {
+//			System.out.println("Contact not found");
+//			return null;
+//		}
 		List<Phone> phones = ofy().load().type(Phone.class)
-				.ancestor(retContact).list();
-		System.out.print(contact.getName() + ": " + phones.size() + " phones");
+				.ancestor(contact).list();
+		System.out.println(contact.getName() + ": " + phones.size() + " phones");
 		return phones;
 	}
 
