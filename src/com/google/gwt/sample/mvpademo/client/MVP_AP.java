@@ -3,13 +3,11 @@ package com.google.gwt.sample.mvpademo.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.sample.mvpademo.client.activities.home.HomePlace;
+import com.google.gwt.sample.mvpademo.client.activities.main.MainPlace;
 import com.google.gwt.sample.mvpademo.client.mvp.PhoneActivityMapper;
 import com.google.gwt.sample.mvpademo.client.mvp.PhoneAnimationMapper;
 import com.google.gwt.sample.mvpademo.client.mvp.PhonePlaceHistoryMapper;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.googlecode.gwtphonegap.client.PhoneGap;
 import com.googlecode.gwtphonegap.client.PhoneGapAvailableEvent;
 import com.googlecode.gwtphonegap.client.PhoneGapAvailableHandler;
 import com.googlecode.gwtphonegap.client.PhoneGapTimeoutEvent;
@@ -56,7 +54,7 @@ public class MVP_AP implements EntryPoint {
 		PhonePlaceHistoryMapper historyMapper = GWT.create(PhonePlaceHistoryMapper.class);
 		final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
 		createPhoneDisplay(clientFactory);
-		historyHandler.register(clientFactory.getPlaceController(), clientFactory.getEventBus(), new HomePlace());				
+		historyHandler.register(clientFactory.getPlaceController(), clientFactory.getEventBus(), new MainPlace());				
 		historyHandler.handleCurrentHistory();
 	}
 	

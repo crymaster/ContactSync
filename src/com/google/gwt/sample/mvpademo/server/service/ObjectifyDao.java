@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery.TooManyResultsException;
-import com.google.gwt.sample.mvpademo.domain.Contact;
-import com.google.gwt.sample.mvpademo.domain.User;
+import com.google.gwt.sample.mvpademo.server.domain.Contact;
+import com.google.gwt.sample.mvpademo.server.domain.User;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.cmd.Query;

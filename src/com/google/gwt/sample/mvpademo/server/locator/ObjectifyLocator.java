@@ -1,6 +1,6 @@
 package com.google.gwt.sample.mvpademo.server.locator;
 
-import com.google.gwt.sample.mvpademo.domain.User;
+import com.google.gwt.sample.mvpademo.server.domain.User;
 import com.google.web.bindery.requestfactory.shared.Locator;
 import com.googlecode.objectify.ObjectifyService;
 

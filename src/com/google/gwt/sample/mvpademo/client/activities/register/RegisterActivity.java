@@ -1,18 +1,10 @@
 package com.google.gwt.sample.mvpademo.client.activities.register;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.sample.mvpademo.client.ClientFactory;
 import com.google.gwt.sample.mvpademo.client.activities.home.HomePlace;
-import com.google.gwt.sample.mvpademo.domain.User;
-import com.google.gwt.sample.mvpademo.shared.proxy.UserProxy;
-import com.google.gwt.sample.mvpademo.shared.service.UserRequestContext;
-import com.google.gwt.sample.mvpademo.shared.service.UserRequestFactory;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.requestfactory.shared.Receiver;
 import com.googlecode.mgwt.dom.client.event.tap.TapEvent;
 import com.googlecode.mgwt.dom.client.event.tap.TapHandler;
 import com.googlecode.mgwt.mvp.client.MGWTAbstractActivity;
@@ -48,24 +40,24 @@ public class RegisterActivity extends MGWTAbstractActivity{
 				String userName = clientFactory.getRegisterView().getUserNameBox().getText();
 				String pass = clientFactory.getRegisterView().getPasswordBox().getText();
 				
-				User user = new User();
-				user.setName(userName);
-				user.setPassword(pass);
-				clientFactory.getUserService().register(user, new AsyncCallback<Boolean>() {
-					
-					@Override
-					public void onSuccess(Boolean result) {
-						if(result)
-							clientFactory.getRegisterView().alert("Register successfully");
-						else 
-							clientFactory.getRegisterView().alert("This username already existed");
-					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						clientFactory.getRegisterView().alert("Register failed");
-					}
-				});
+//				User user = new User();
+//				user.setName(userName);
+//				user.setPassword(pass);
+//				clientFactory.getUserService().register(user, new AsyncCallback<Boolean>() {
+//					
+//					@Override
+//					public void onSuccess(Boolean result) {
+//						if(result)
+//							clientFactory.getRegisterView().alert("Register successfully");
+//						else 
+//							clientFactory.getRegisterView().alert("This username already existed");
+//					}
+//					
+//					@Override
+//					public void onFailure(Throwable caught) {
+//						clientFactory.getRegisterView().alert("Register failed");
+//					}
+//				});
 			}
 			
 			private boolean validateFields(){

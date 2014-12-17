@@ -12,7 +12,6 @@ import com.google.gwt.sample.mvpademo.client.activities.main.MainActivity;
 import com.google.gwt.sample.mvpademo.client.activities.main.MainPlace;
 import com.google.gwt.sample.mvpademo.client.activities.register.RegisterActivity;
 import com.google.gwt.sample.mvpademo.client.activities.register.RegisterPlace;
-import com.google.gwt.user.client.Window;
 
 public class PhoneActivityMapper implements ActivityMapper{
 	private ClientFactory clientFactory;

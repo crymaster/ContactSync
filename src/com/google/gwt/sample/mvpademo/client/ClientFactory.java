@@ -5,10 +5,9 @@ import com.google.gwt.sample.mvpademo.client.activities.home.HomeView;
 import com.google.gwt.sample.mvpademo.client.activities.login.LoginView;
 import com.google.gwt.sample.mvpademo.client.activities.main.MainView;
 import com.google.gwt.sample.mvpademo.client.activities.register.RegisterView;
-import com.google.gwt.sample.mvpademo.client.rpc.UserServiceAsync;
-import com.google.gwt.sample.mvpademo.domain.User;
-import com.google.gwt.sample.mvpademo.shared.service.UserRequestFactory;
-//import com.google.gwt.sample.mvpademo.shared.service.UserRequestFactory;
+import com.google.gwt.sample.mvpademo.client.rpc.LoginServiceAsync;
+//import com.google.gwt.sample.mvpademo.client.rpc.LoginServiceAsync;
+import com.google.gwt.sample.mvpademo.rpcobject.CSUser;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.gwtphonegap.client.PhoneGap;
 
@@ -19,9 +18,8 @@ public interface ClientFactory {
 	LoginView getLoginView();
 	RegisterView getRegisterView();
 	MainView getMainView();
-	UserServiceAsync getUserService();
+	LoginServiceAsync getLoginService();
 	PhoneGap getPhoneGap();
-	User getUser();
-	void setUser(User user);
-//	UserRequestFactory getRequestFactory();
+	CSUser getUser();
+	void setUser(CSUser user);
 }
