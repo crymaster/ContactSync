@@ -7,20 +7,21 @@ public class CSUser implements Serializable {
 	private boolean loggedIn = false;
 	private String loginUrl;
 	private String logoutUrl;
-	private String emailAddress;
+	private String username;
 	private String nickname;
+	private String password;
 	private int version;
 	private List<CSContact> contacts;
 
 	public CSUser() {
 	}
 
-	public String getEmailAddress() {
-		return emailAddress;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public List<CSContact> getContacts() {
@@ -70,5 +71,13 @@ public class CSUser implements Serializable {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 }

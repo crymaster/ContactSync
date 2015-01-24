@@ -6,8 +6,8 @@
 
 	<!-- Servlets -->
 	<servlet>
-		<servlet-name>loginServlet</servlet-name>
-		<servlet-class>com.google.gwt.sample.mvpademo.server.service.LoginServiceImpl</servlet-class>
+		<servlet-name>serviceServlet</servlet-name>
+		<servlet-class>com.google.gwt.sample.mvpademo.server.service.ClientServiceImpl</servlet-class>
 	</servlet>
 
 	<!-- <servlet>
@@ -22,8 +22,8 @@
 	 -->
 
 	<servlet-mapping>
-		<servlet-name>loginServlet</servlet-name>
-		<url-pattern>/mvp_ap/login</url-pattern>
+		<servlet-name>serviceServlet</servlet-name>
+		<url-pattern>/mvp_ap/service</url-pattern>
 	</servlet-mapping>
 
 	<!-- Default page to serve -->

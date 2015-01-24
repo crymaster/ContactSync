@@ -1,5 +1,0 @@
-# Module mvp_ap
-# RPC service class, partial path of RPC policy file
-com.googlecode.gwtphonegap.client.file.browser.service.FileRemoteService, 08ED290A8A1BA34B7BB9E2F7392DD0D4.gwt.rpc
-com.google.gwt.sample.mvpademo.client.rpc.LoginService, 1EB502F00F2F446A52E6C936367E5734.gwt.rpc
-com.googlecode.gwtphonegap.client.log.shared.PhoneGapLogService, BB850280443CBF073E9FB7C0308476B9.gwt.rpc

@@ -1,2 +1,0 @@
-serviceClass: com.google.gwt.sample.mvpademo.client.rpc.UserService
-path: 9E2C2D52F2B06A2BD05F08BE66CB6C43.gwt.rpc

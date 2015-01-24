@@ -68,15 +68,15 @@ public class MainActivity extends MGWTAbstractActivity {
 		// fileUtil.write(clientFactory.getPhoneGap().getFile(),"contactsync.txt","version:0");
 
 		CSUser user = new CSUser();
-		user.setEmailAddress("abc@gmail.com");
+		user.setUsername("hoangson2@gmail.com");
 		clientFactory.setUser(user);
-		clientFactory.getLoginService().login(user,
+		clientFactory.getClientService().login(user,
 				new AsyncCallback<CSUser>() {
 
 					@Override
 					public void onSuccess(CSUser user) {
 						clientFactory.getMainView().setText(
-								"Login OK: " + user.getEmailAddress()
+								"Login OK: " + user.getUsername()
 										+ "\nVersion: " + user.getVersion());
 						clientFactory.setUser(user);
 
@@ -90,7 +90,7 @@ public class MainActivity extends MGWTAbstractActivity {
 								.find(fields, new ContactFindCallback() {
 									@Override
 									public void onSuccess(
-											LightArray<com.googlecode.gwtphonegap.client.contacts.Contact> contacts) {
+											LightArray<Contact> contacts) {
 										String str = "";
 										str += contacts.length() + "\n";
 										CSContact csContact;
@@ -136,9 +136,9 @@ public class MainActivity extends MGWTAbstractActivity {
 												.process1(clientFactory
 														.getPhoneGap()
 														.getFile(),
-														"contactsync.txt",
+														ClientFactoryImpl.user.getUsername()+".txt",
 														FILE_CONTENT,
-														contactList);
+														contactList, contacts);
 
 										// clientFactory.getMainView().alert(fileContent.getVersion()
 										// + "");

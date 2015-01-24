@@ -10,8 +10,8 @@ import com.google.gwt.sample.mvpademo.client.activities.main.MainView;
 import com.google.gwt.sample.mvpademo.client.activities.main.MainViewImpl;
 import com.google.gwt.sample.mvpademo.client.activities.register.RegisterView;
 import com.google.gwt.sample.mvpademo.client.activities.register.RegisterViewImpl;
-import com.google.gwt.sample.mvpademo.client.rpc.LoginService;
-import com.google.gwt.sample.mvpademo.client.rpc.LoginServiceAsync;
+import com.google.gwt.sample.mvpademo.client.rpc.ClientService;
+import com.google.gwt.sample.mvpademo.client.rpc.ClientServiceAsync;
 import com.google.gwt.sample.mvpademo.rpcobject.CSUser;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.web.bindery.event.shared.EventBus;
@@ -30,15 +30,15 @@ public class ClientFactoryImpl implements ClientFactory {
 	private final LoginView loginView = new LoginViewImpl();
 	private final RegisterView registerView = new RegisterViewImpl();
 	public static final MainView mainView = new MainViewImpl();
-	public static final LoginServiceAsync loginService = GWT
-			.create(LoginService.class);
+	public static final ClientServiceAsync clientService = GWT
+			.create(ClientService.class);
 	public static CSUser user = null;
 
 	// private ChildBrowser childBrowser = GWT.create(ChildBrowser.class);
 
 	public ClientFactoryImpl() {
-		PhonegapUtil.prepareService((ServiceDefTarget) loginService, HOST
-				+ PATH, "login");
+		PhonegapUtil.prepareService((ServiceDefTarget) clientService, HOST
+				+ PATH, "service");
 		// childBrowser.initialize();
 		// phoneGap.loadPlugin("childBrowser", childBrowser);
 	}
@@ -93,8 +93,8 @@ public class ClientFactoryImpl implements ClientFactory {
 	}
 
 	@Override
-	public LoginServiceAsync getLoginService() {
-		return loginService;
+	public ClientServiceAsync getClientService() {
+		return clientService;
 	}
 
 }

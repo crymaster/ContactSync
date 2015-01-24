@@ -101,7 +101,7 @@ public class CompareContactUtil {
 		return changedList;
 	}
 
-	private static ArrayList<CSContact> clone(ArrayList<CSContact> contacts) {
+	public static ArrayList<CSContact> clone(ArrayList<CSContact> contacts) {
 		ArrayList<CSContact> cloneContacts = new ArrayList<CSContact>();
 		CSContact contact;
 		CSContact cloneContact;
@@ -128,5 +128,194 @@ public class CompareContactUtil {
 			cloneContacts.add(cloneContact);
 		}
 		return cloneContacts;
+	}
+
+	public static void applyChange(ArrayList<CSContact> changes,
+			ArrayList<CSContact> contacts) {
+		CSContact contact1;
+		CSContact contact2;
+		ArrayList<CSPhone> phones1;
+		ArrayList<CSPhone> phones2;
+		CSPhone phone1;
+		CSPhone phone2;
+		boolean isNew;
+		boolean isNewPhone;
+		boolean isDeleted;
+		boolean isDeletedPhone;
+		boolean isUpdated;
+		for (int i = 0; i < changes.size(); i++) {
+			contact1 = changes.get(i);
+			if (contact1.getStatus() == 1) {
+				isNew = true;
+				for (int j = 0; j < contacts.size(); j++) {
+					contact2 = contacts.get(j);
+					if (contact1.getName().equalsIgnoreCase(contact2.getName())) {
+						// ClientFactoryImpl.mainView
+						// .setText(ClientFactoryImpl.mainView.getText()
+						// + contact1.getName() + " ");
+						isNew = false;
+						phones1 = (ArrayList<CSPhone>) contact1.getPhones();
+						phones2 = (ArrayList<CSPhone>) contact2.getPhones();
+
+						for (int k = 0; k < phones1.size(); k++) {
+							phone1 = phones1.get(k);
+							isNewPhone = true;
+							for (int l = 0; l < phones2.size(); l++) {
+								phone2 = phones2.get(l);
+								if (phone1.getPhone().equals(phone2.getPhone())) {
+									// ClientFactoryImpl.mainView
+									// .setText(ClientFactoryImpl.mainView
+									// .getText()
+									// + "R "
+									// + phone1.getPhone() + " ");
+									phones1.remove(k);
+									k--;
+									contact1.setStatus(Status.UPDATE);
+									isNewPhone = false;
+									break;
+								}
+							}
+							if (isNewPhone) {
+								// ClientFactoryImpl.mainView
+								// .setText(ClientFactoryImpl.mainView
+								// .getText()
+								// + "AP "
+								// + phone1.getPhone() + " ");
+								contact1.setStatus(Status.UPDATE);
+								phone1.setStatus(Status.NEW);
+								phones2.add(phone1);
+							}
+						}
+						break;
+					}
+				}
+				if (isNew) {
+					// ClientFactoryImpl.mainView
+					// .setText(ClientFactoryImpl.mainView.getText()
+					// + "A " + contact1.getName() + " ");
+					contacts.add(contact1);
+				}
+				if (contact1.getPhones().size() == 0) {
+					changes.remove(contact1);
+					i--;
+					// ClientFactoryImpl.mainView
+					// .setText(ClientFactoryImpl.mainView.getText()
+					// + "RM");
+				}
+				// ClientFactoryImpl.mainView.setText(ClientFactoryImpl.mainView
+				// .getText() + "\n");
+			} else if (contact1.getStatus() == -1) {
+				isDeleted = false;
+				for (int j = 0; j < contacts.size(); j++) {
+					contact2 = contacts.get(j);
+					if (contact1.getName().equalsIgnoreCase(contact2.getName())) {
+						isDeleted = true;
+						phones1 = (ArrayList<CSPhone>) contact1.getPhones();
+						phones2 = (ArrayList<CSPhone>) contact2.getPhones();
+
+						for (int k = 0; k < phones1.size(); k++) {
+							phone1 = phones1.get(k);
+							isDeletedPhone = false;
+							for (int l = 0; l < phones2.size(); l++) {
+								phone2 = phones2.get(l);
+								if (phone1.getPhone().equals(phone2.getPhone())) {
+									contact1.setStatus(Status.UPDATE);
+									phone1.setStatus(Status.DELETE);
+									phones2.remove(l);
+									isDeletedPhone = true;
+									break;
+								}
+							}
+							if (!isDeletedPhone) {
+								contact1.setStatus(Status.UPDATE);
+								phones1.remove(k);
+								k--;
+							}
+						}
+						if (phones2.size() == 0) {
+							contact1.setStatus(Status.DELETE);
+							contacts.remove(contact2);
+						}
+						break;
+					}
+				}
+				if (!isDeleted) {
+					changes.remove(contact1);
+					i--;
+				}
+				if (contact1.getPhones().size() == 0) {
+					changes.remove(contact1);
+					i--;
+				}
+			} else if (contact1.getStatus() == 2) {
+				isUpdated = false;
+				for (int j = 0; j < contacts.size(); j++) {
+					contact2 = contacts.get(j);
+					if (contact1.getName().equalsIgnoreCase(contact2.getName())) {
+						isUpdated = true;
+						phones1 = (ArrayList<CSPhone>) contact1.getPhones();
+						phones2 = (ArrayList<CSPhone>) contact2.getPhones();
+
+						for (int k = 0; k < phones1.size(); k++) {
+							phone1 = phones1.get(k);
+							if (phone1.getStatus() == 1) {
+								isNewPhone = true;
+								for (int l = 0; l < phones2.size(); l++) {
+									phone2 = phones2.get(l);
+									if (phone1.getPhone().equals(
+											phone2.getPhone())) {
+										// ClientFactoryImpl.mainView
+										// .setText(ClientFactoryImpl.mainView
+										// .getText()
+										// + "R "
+										// + phone1.getPhone() + " ");
+										phones1.remove(k);
+										k--;
+										isNewPhone = false;
+										break;
+									}
+								}
+								if (isNewPhone) {
+									// ClientFactoryImpl.mainView
+									// .setText(ClientFactoryImpl.mainView
+									// .getText()
+									// + "AP "
+									// + phone1.getPhone() + " ");
+									phones2.add(phone1);
+								}
+							} else {
+								isDeletedPhone = false;
+								for (int l = 0; l < phones2.size(); l++) {
+									phone2 = phones2.get(l);
+									if (phone1.getPhone().equals(
+											phone2.getPhone())) {
+										phones2.remove(l);
+										isDeletedPhone = true;
+										break;
+									}
+								}
+								if (!isDeletedPhone) {
+									phones1.remove(k);
+									k--;
+								}
+							}
+						}
+						if (phones2.size() == 0) {
+							contact1.setStatus(Status.DELETE);
+							contacts.remove(contact2);
+						}
+						break;
+					}
+				}
+				if (!isUpdated) {
+					changes.remove(contact1);
+					i--;
+				}
+				if (contact1.getPhones().size() == 0) {
+					changes.remove(contact1);
+					i--;
+				}
+			}
+		}
 	}
 }

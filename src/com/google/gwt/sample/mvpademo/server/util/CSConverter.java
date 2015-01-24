@@ -10,14 +10,16 @@ import com.google.gwt.sample.mvpademo.server.domain.User;
 public class CSConverter {
 	public static User toUser(CSUser csUser) {
 		User user = new User();
-		user.setName(csUser.getEmailAddress());
+		user.setName(csUser.getUsername());
 		user.setVersion(csUser.getVersion());
+		user.setPassword(csUser.getPassword());
 		return user;
 	}
 
 	public static CSUser toCSUser(User user) {
 		CSUser csUser = new CSUser();
-		csUser.setEmailAddress(user.getName());
+		csUser.setUsername(user.getName());
+		csUser.setPassword(user.getPassword());
 		csUser.setVersion(user.getVersion());
 		return csUser;
 	}

@@ -5,8 +5,11 @@ import java.util.List;
 
 import com.google.gwt.sample.mvpademo.client.ClientFactoryImpl;
 import com.google.gwt.sample.mvpademo.rpcobject.CSContact;
+import com.google.gwt.sample.mvpademo.rpcobject.CSPhone;
 import com.google.gwt.sample.mvpademo.rpcobject.CSUser;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.googlecode.gwtphonegap.client.contacts.Contact;
+import com.googlecode.gwtphonegap.client.contacts.ContactField;
 import com.googlecode.gwtphonegap.client.file.DirectoryEntry;
 import com.googlecode.gwtphonegap.client.file.DirectoryReader;
 import com.googlecode.gwtphonegap.client.file.EntryBase;
@@ -28,11 +31,12 @@ public class FileUtil {
 	ArrayList<CSContact> changedList; // List of contact change between stable
 										// version on file and current contact
 										// list on the phone
-	ArrayList<CSContact> svContactList;
-	
+	LightArray<Contact> contacts;
+
 	public FileContent process1(File file, String fileName, String content,
-			ArrayList<CSContact> contactList) {
+			ArrayList<CSContact> contactList, LightArray<Contact> contacts) {
 		this.contactList = contactList;
+		this.contacts = contacts;
 		FileCallback1 fileCallback = new FileCallback1(file, fileName, content);
 		// Access to file system
 		file.requestFileSystem(FileSystem.LocalFileSystem_PERSISTENT, 0,
@@ -193,7 +197,8 @@ public class FileUtil {
 									+ "Version:" + fileContent.version + "\n");
 					// //Version = 0, all are changes
 					if (fileContent.version == 0) {
-						if (changedList != null) {
+						if (contactList != null) {
+							changedList = CompareContactUtil.clone(contactList);
 							for (int i = 0; i < changedList.size(); i++) {
 								changedList.get(i).setStatus(1);
 							}
@@ -203,10 +208,10 @@ public class FileUtil {
 								// contact list in phone and in file
 						changedList = CompareContactUtil.compare(contactList,
 								fileContent.getContacts());
-
-						ClientFactoryImpl.mainView
-								.setText(ClientFactoryImpl.mainView.getText()
-										+ "CHANGES\n");
+						if (changedList.size() > 0)
+							ClientFactoryImpl.mainView
+									.setText(ClientFactoryImpl.mainView
+											.getText() + "CHANGES\n");
 						for (int i = 0; i < changedList.size(); i++) {
 							CSContact contact = changedList.get(i);
 							ClientFactoryImpl.mainView
@@ -221,21 +226,26 @@ public class FileUtil {
 
 					// // Both phone and server in initial state
 					if (fileContent.version == user.getVersion()
-							&& changedList.size() == 0)
+							&& changedList.size() == 0) {
+						ClientFactoryImpl.mainView
+								.setText(ClientFactoryImpl.mainView.getText()
+										+ "No change\n");
 						return;
-					// ///Server version = client version and there are changes in phone, up
+					}
+					// ///Server version = client version and there are changes
+					// in phone, up
 					// all to server
 					if (fileContent.version == user.getVersion()) {
 						ClientFactoryImpl.mainView
 								.setText(ClientFactoryImpl.mainView.getText()
 										+ "Server VS = Client VS, Client changes\n");
-						push(user.getEmailAddress());
+						push(user.getUsername());
 						return;
 					}
 
 					// ////Server version is higher or changes in client, pull
 					// everything to phone
-					pull(user.getEmailAddress());
+					pull(user.getUsername());
 					return;
 				}
 			});
@@ -259,7 +269,7 @@ public class FileUtil {
 		}
 
 		public void pull(String name) {
-			ClientFactoryImpl.loginService.pull(name,
+			ClientFactoryImpl.clientService.pull(name,
 					new AsyncCallback<List<CSContact>>() {
 
 						@Override
@@ -267,6 +277,65 @@ public class FileUtil {
 							ClientFactoryImpl.mainView
 									.setText(ClientFactoryImpl.mainView
 											.getText() + "Pull Success\n");
+							CompareContactUtil.applyChange(changedList,
+									(ArrayList<CSContact>) result);
+							ClientFactoryImpl.mainView
+									.setText(ClientFactoryImpl.mainView
+											.getText()
+											+ "APPLICABLE CHANGE TO SERVER\n");
+							logList(changedList);
+							ArrayList<CSContact> changes = CompareContactUtil
+									.compare((ArrayList<CSContact>) result,
+											contactList);
+							ClientFactoryImpl.mainView
+									.setText(ClientFactoryImpl.mainView
+											.getText()
+											+ "APPLICABLE CHANGE TO CLIENT\n");
+							logList(changes);
+							ClientFactoryImpl.mainView
+									.setText(ClientFactoryImpl.mainView
+											.getText() + "Updating to client\n");
+							clientUpdate(changes);
+							CSUser user;
+							user = ClientFactoryImpl.user;
+							if (changedList.size() > 0) {
+								user.setVersion(ClientFactoryImpl.user
+										.getVersion() + 1);
+							}
+							ClientFactoryImpl.mainView
+									.setText(ClientFactoryImpl.mainView
+											.getText()
+											+ "Write VS"
+											+ user.getVersion() + "to file\n");
+							write(file, CSConverter.toFileContent(
+									user.getVersion(),
+									(ArrayList<CSContact>) result));
+							if (changedList.size() > 0) {
+								user = new CSUser();
+								user.setUsername(ClientFactoryImpl.user
+										.getUsername());
+								user.setContacts(changedList);
+
+								ClientFactoryImpl.clientService.push(user,
+										new AsyncCallback<Integer>() {
+
+											@Override
+											public void onSuccess(Integer result) {
+												ClientFactoryImpl.mainView.setText(ClientFactoryImpl.mainView
+														.getText()
+														+ "Update to server successfully\n");
+											}
+
+											@Override
+											public void onFailure(
+													Throwable caught) {
+												ClientFactoryImpl.mainView.setText(ClientFactoryImpl.mainView
+														.getText()
+														+ "Update to server error\n");
+											}
+										});
+
+							}
 						}
 
 						@Override
@@ -280,9 +349,9 @@ public class FileUtil {
 
 		public void push(String name) {
 			CSUser user = new CSUser();
-			user.setEmailAddress(name);
+			user.setUsername(name);
 			user.setContacts(changedList);
-			ClientFactoryImpl.loginService.push(user,
+			ClientFactoryImpl.clientService.push(user,
 					new AsyncCallback<Integer>() {
 
 						@Override
@@ -293,9 +362,10 @@ public class FileUtil {
 							CSUser user = ClientFactoryImpl.user;
 							user.setVersion(ClientFactoryImpl.user.getVersion() + 1);
 							ClientFactoryImpl.mainView
-									.setText(ClientFactoryImpl.mainView.getText()
-											+ "Write VS" + user.getVersion()
-											+ "to file\n");
+									.setText(ClientFactoryImpl.mainView
+											.getText()
+											+ "Write VS"
+											+ user.getVersion() + "to file\n");
 							write(file, CSConverter.toFileContent(
 									user.getVersion(), contactList));
 							return;
@@ -339,6 +409,159 @@ public class FileUtil {
 				public void onFailure(FileError error) {
 				}
 			});
+		}
+
+		public void logList(List<CSContact> list) {
+			for (int i = 0; i < list.size(); i++) {
+				CSContact contact = list.get(i);
+				ClientFactoryImpl.mainView.setText(ClientFactoryImpl.mainView
+						.getText()
+						+ contact.getStatus()
+						+ " "
+						+ contact.getName() + " ");
+				for (int j = 0; j < contact.getPhones().size(); j++) {
+					ClientFactoryImpl.mainView
+							.setText(ClientFactoryImpl.mainView.getText()
+									+ contact.getPhones().get(j).getStatus()
+									+ " "
+									+ contact.getPhones().get(j).getPhone()
+									+ " ");
+				}
+				ClientFactoryImpl.mainView.setText(ClientFactoryImpl.mainView
+						.getText() + "\n");
+			}
+		}
+
+		public void clientUpdate(List<CSContact> list) {
+			CSContact csContact;
+			for (int i = 0; i < list.size(); i++) {
+				csContact = list.get(i);
+				ClientFactoryImpl.mainView.setText(ClientFactoryImpl.mainView
+						.getText() + csContact.getName() + "\n");
+				if (csContact.getStatus() == Status.NEW) {
+					Contact contact = ClientFactoryImpl.phoneGap.getContacts()
+							.create();
+					contact.getName().setGivenName(csContact.getName());
+					contact.setDisplayName(csContact.getDisplayName());
+					for (int j = 0; j < csContact.getPhones().size(); j++) {
+						contact.getPhoneNumbers().push(
+								ClientFactoryImpl.phoneGap
+										.getContacts()
+										.getFactory()
+										.createContactField(
+												"home",
+												csContact.getPhones().get(j)
+														.getPhone(), true));
+					}
+					contact.save();
+				} else if (csContact.getStatus() == Status.DELETE) {
+					for (int j = 0; j < contacts.length(); j++) {
+						Contact contact = contacts.get(j);
+						String name = "";
+						if (contact.getName().getGivenName() != null)
+							name = contact.getName().getGivenName() + " ";
+						if (contact.getName().getMiddleName() != null)
+							name += contact.getName().getMiddleName() + " ";
+						if (contact.getName().getFamilyName() != null)
+							name += contact.getName().getFamilyName();
+						// ClientFactoryImpl.mainView
+						// .setText(ClientFactoryImpl.mainView.getText()
+						// + name + "\n");
+						if (name.trim().equalsIgnoreCase(csContact.getName())) {
+							ClientFactoryImpl.mainView
+									.setText(ClientFactoryImpl.mainView
+											.getText() + "D " + name + "\n");
+							contact.remove();
+							break;
+						}
+					}
+				} else {
+					for (int j = 0; j < contacts.length(); j++) {
+						Contact contact = contacts.get(j);
+						String name = "";
+						if (contact.getName().getGivenName() != null)
+							name = contact.getName().getGivenName() + " ";
+						if (contact.getName().getMiddleName() != null)
+							name += contact.getName().getMiddleName() + " ";
+						if (contact.getName().getFamilyName() != null)
+							name += contact.getName().getFamilyName();
+						name = name.trim();
+						List<CSPhone> phones;
+						if (name.equalsIgnoreCase(csContact.getName())) {
+							ClientFactoryImpl.mainView
+									.setText(ClientFactoryImpl.mainView
+											.getText() + name + " ");
+							phones = csContact.getPhones();
+							for (int k = 0; k < phones.size(); k++) {
+								CSPhone phone = phones.get(k);
+								if (phone.getStatus() == Status.NEW) {
+									ClientFactoryImpl.mainView
+											.setText(ClientFactoryImpl.mainView
+													.getText()
+													+ phone.getPhone() + "\n");
+									contact.getPhoneNumbers().push(
+											ClientFactoryImpl.phoneGap
+													.getContacts()
+													.getFactory()
+													.createContactField("home",
+															phone.getPhone(),
+															true));
+								} else {
+									LightArray<ContactField> la = contact
+											.getPhoneNumbers();
+									Contact contact1 = contact;
+									ClientFactoryImpl.mainView
+											.setText(ClientFactoryImpl.mainView
+													.getText()
+													+ "R "
+													+ phone.getPhone() + "\n");
+									for (int l = 0; l < la.length(); l++) {
+										ContactField cf = la.shift();
+										ClientFactoryImpl.mainView
+												.setText(ClientFactoryImpl.mainView
+														.getText()
+														+ "Value:"
+														+ cf.getValue() + "\n");
+										if (cf.getValue().equals(
+												phone.getPhone())) {
+											break;
+										} else {
+											la.push(cf);
+										}
+									}
+									contact = ClientFactoryImpl.phoneGap
+											.getContacts().create();
+									ClientFactoryImpl.mainView
+											.setText(ClientFactoryImpl.mainView
+													.getText()
+													+ csContact.getName()
+													+ " "
+													+ csContact
+															.getDisplayName()
+													+ "\n");
+									contact.getName().setGivenName(
+											csContact.getName());
+									contact.setDisplayName(csContact.getName());
+									for (int l = 0; l < la.length(); l++) {
+										contact.getPhoneNumbers()
+												.push(ClientFactoryImpl.phoneGap
+														.getContacts()
+														.getFactory()
+														.createContactField(
+																"home",
+																la.get(l)
+																		.getValue(),
+																true));
+									}
+									contact1.remove();
+								}
+							}
+							contact.save();
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 }
