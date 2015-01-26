@@ -15,7 +15,7 @@ public class ContactLocator extends Locator<Contact, String>{
 			throw new RuntimeException(ex);
 		}
 	}
-	
+	 
 	@Override
 	public Contact find(Class<? extends Contact> clazz, String id) {
 		return ObjectifyService.ofy().load().type(clazz).id(id).get();

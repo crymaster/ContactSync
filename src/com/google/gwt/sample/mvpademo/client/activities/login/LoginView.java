@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.googlecode.mgwt.dom.client.event.tap.HasTapHandlers;
 import com.googlecode.mgwt.ui.client.widget.MTextBox;
 
+
 public interface LoginView extends IsWidget{
 	HasTapHandlers getLoginButton();
 	HasTapHandlers getBackButton();

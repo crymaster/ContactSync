@@ -10,4 +10,4 @@ import com.google.web.bindery.requestfactory.shared.Service;
 @Service(value=UserDao.class, locator=DaoServiceLocator.class)
 public interface UserRequestContext extends RequestContext{
 	Request<String>	 addUser(UserProxy user);
-}
+} 

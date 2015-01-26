@@ -20,7 +20,7 @@ public class DatastoreObject {
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
-	
+
 	@PrePersist
 	void onPersist(){
 		this.version++;
