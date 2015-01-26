@@ -3,6 +3,7 @@ package com.google.gwt.sample.mvpademo.client.activities.register;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.sample.mvpademo.client.ClientFactory;
 import com.google.gwt.sample.mvpademo.client.activities.home.HomePlace;
+import com.google.gwt.sample.mvpademo.client.activities.main.MainPlace;
 import com.google.gwt.sample.mvpademo.rpcobject.CSUser;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -57,9 +58,7 @@ public class RegisterActivity extends MGWTAbstractActivity {
 									@Override
 									public void onSuccess(Boolean result) {
 										if (result)
-											clientFactory
-													.getRegisterView()
-													.alert("Register successfully");
+											clientFactory.getPlaceController().goTo(new MainPlace());
 										else
 											clientFactory
 													.getRegisterView()

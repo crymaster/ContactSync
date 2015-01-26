@@ -24,6 +24,15 @@ public class HomeActivity extends MGWTAbstractActivity{
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
 		HomeView homeView = (HomeViewImpl)clientFactory.getHomeView();
 		panel.setWidget(homeView);
+		((HomeViewImpl)homeView).dialog.show();
+		((HomeViewImpl)homeView).dialog.addTapHandler(new TapHandler() {
+			
+			@Override
+			public void onTap(TapEvent event) {
+				// TODO Auto-generated method stub
+				((HomeViewImpl)clientFactory.getHomeView()).dialog.hide();
+			}
+		});
 		addHandlerRegistration(homeView.getLoginButton().addTapHandler(new TapHandler() {
 			
 			@Override

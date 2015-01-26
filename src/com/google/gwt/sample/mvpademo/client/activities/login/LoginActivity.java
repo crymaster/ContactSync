@@ -3,6 +3,7 @@ package com.google.gwt.sample.mvpademo.client.activities.login;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.sample.mvpademo.client.ClientFactory;
 import com.google.gwt.sample.mvpademo.client.activities.home.HomePlace;
+import com.google.gwt.sample.mvpademo.client.activities.main.MainPlace;
 import com.google.gwt.sample.mvpademo.rpcobject.CSUser;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -53,8 +54,8 @@ public class LoginActivity extends MGWTAbstractActivity{
 					public void onSuccess(CSUser retUser) {
 						if(retUser != null){
 							clientFactory.setUser(retUser);
-//							clientFactory.getPlaceController().goTo(new MainPlace());
-							clientFactory.getRegisterView().alert("Login successfully");
+							clientFactory.getPlaceController().goTo(new MainPlace());
+//							clientFactory.getRegisterView().alert("Login successfully");
 						}
 						else
 							clientFactory.getLoginView().alert("Incorrect username or password");

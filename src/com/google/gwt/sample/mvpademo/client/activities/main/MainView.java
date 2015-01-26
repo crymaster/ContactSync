@@ -6,15 +6,21 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.googlecode.mgwt.dom.client.event.tap.HasTapHandlers;
 import com.googlecode.mgwt.ui.client.widget.GroupingCellList.CellGroup;
+import com.googlecode.mgwt.ui.client.widget.HeaderPanel;
 
 public interface MainView extends IsWidget {
 	void alert(String text);
 
 	HasTapHandlers getBackButton();
+	
+	HasTapHandlers getSyncButton();
 
 	public String getText();
 
+	public HeaderPanel getHeaderPanel();
+	
 	public void setText(String text);
+	
 
 	//public HasText getHeader();
 

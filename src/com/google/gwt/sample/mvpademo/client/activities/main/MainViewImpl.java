@@ -10,6 +10,7 @@ import com.googlecode.mgwt.ui.client.dialog.AlertDialog;
 import com.googlecode.mgwt.ui.client.widget.Button;
 import com.googlecode.mgwt.ui.client.widget.GroupingCellList;
 import com.googlecode.mgwt.ui.client.widget.GroupingCellList.CellGroup;
+import com.googlecode.mgwt.ui.client.widget.HeaderButton;
 import com.googlecode.mgwt.ui.client.widget.HeaderList;
 import com.googlecode.mgwt.ui.client.widget.HeaderPanel;
 import com.googlecode.mgwt.ui.client.widget.LayoutPanel;
@@ -19,7 +20,8 @@ import com.googlecode.mgwt.ui.client.widget.celllist.Cell;
 public class MainViewImpl implements MainView {
 	private LayoutPanel main = new LayoutPanel();
 	private HeaderPanel headerPanel = new HeaderPanel();
-	private Button backButton = new Button();
+	private HeaderButton backButton = new HeaderButton();
+	private Button syncButton = new Button();
 	private AlertDialog alert = new AlertDialog("", "");
 	private MTextArea text = new MTextArea();
 	private HeaderList<Header, Content> headerList;
@@ -27,6 +29,7 @@ public class MainViewImpl implements MainView {
 	public MainViewImpl() {
 		main.setWidth("100%");
 		backButton.setText("Back");
+		syncButton.setText("Sync");
 		headerPanel.setLeftWidget(backButton);
 		headerPanel.setCenter("Welcome");
 		text.setHeight("500px");
@@ -36,6 +39,7 @@ public class MainViewImpl implements MainView {
 		headerList = new HeaderList<Header, Content>(groupingCellList);
 
 		main.add(headerList);
+		main.add(syncButton);
 		main.add(text);
 	}
 
@@ -48,6 +52,11 @@ public class MainViewImpl implements MainView {
 	public HasTapHandlers getBackButton() {
 		return backButton;
 	}
+	
+	@Override
+	public HasTapHandlers getSyncButton() {
+		return syncButton;
+	}
 
 	@Override
 	public Widget asWidget() {
@@ -59,6 +68,11 @@ public class MainViewImpl implements MainView {
 		return text.getText();
 	}
 
+	@Override
+	public HeaderPanel getHeaderPanel() {
+		return headerPanel;
+	}
+	
 	public void setText(String text) {
 		this.text.setText(text);
 	}

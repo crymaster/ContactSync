@@ -6,16 +6,14 @@ import java.util.List;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.sample.mvpademo.client.ClientFactory;
 import com.google.gwt.sample.mvpademo.client.ClientFactoryImpl;
+import com.google.gwt.sample.mvpademo.client.activities.login.LoginPlace;
 import com.google.gwt.sample.mvpademo.client.activities.main.MainView.Content;
 import com.google.gwt.sample.mvpademo.client.activities.main.MainView.Header;
 import com.google.gwt.sample.mvpademo.client.util.CSConverter;
 import com.google.gwt.sample.mvpademo.client.util.FileContent;
 import com.google.gwt.sample.mvpademo.client.util.FileUtil;
 import com.google.gwt.sample.mvpademo.rpcobject.CSContact;
-import com.google.gwt.sample.mvpademo.rpcobject.CSEmail;
-import com.google.gwt.sample.mvpademo.rpcobject.CSPhone;
 import com.google.gwt.sample.mvpademo.rpcobject.CSUser;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.googlecode.gwtphonegap.client.contacts.Contact;
@@ -25,7 +23,10 @@ import com.googlecode.gwtphonegap.client.contacts.ContactFindOptions;
 import com.googlecode.gwtphonegap.client.contacts.Contacts;
 import com.googlecode.gwtphonegap.collection.shared.CollectionFactory;
 import com.googlecode.gwtphonegap.collection.shared.LightArray;
+import com.googlecode.mgwt.dom.client.event.tap.TapEvent;
+import com.googlecode.mgwt.dom.client.event.tap.TapHandler;
 import com.googlecode.mgwt.mvp.client.MGWTAbstractActivity;
+import com.googlecode.mgwt.ui.client.widget.Button;
 import com.googlecode.mgwt.ui.client.widget.GroupingCellList.CellGroup;
 import com.googlecode.mgwt.ui.client.widget.GroupingCellList.StandardCellGroup;
 
@@ -50,16 +51,18 @@ public class MainActivity extends MGWTAbstractActivity {
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
 		MainView mainView = (MainViewImpl) clientFactory.getMainView();
+		mainView.getHeaderPanel().setCenter("Hello, " + clientFactory.getUser().getUsername());
 		panel.setWidget(mainView);
-		// addHandlerRegistration(mainView.getBackButton().addTapHandler(new
-		// TapHandler() {
-		//
-		// @Override
-		// public void onTap(TapEvent event) {
-		// clientFactory.getLoginView().reset();
-		// clientFactory.getPlaceController().goTo(new LoginPlace());
-		// }
-		// }));
+		addHandlerRegistration(mainView.getBackButton().addTapHandler(
+				new TapHandler() {
+
+					@Override
+					public void onTap(TapEvent event) {
+						clientFactory.getLoginView().reset();
+						clientFactory.getPlaceController().goTo(
+								new LoginPlace());
+					}
+				}));
 		// fakeContactOnWeb();
 		// ArrayList<CSContact> csContacts = (ArrayList<CSContact>) ContactUtil
 		// .phoneContactToCSContact(clientFactory.getPhoneGap()
@@ -67,23 +70,22 @@ public class MainActivity extends MGWTAbstractActivity {
 		// FileUtil fileUtil = new FileUtil();
 		// fileUtil.write(clientFactory.getPhoneGap().getFile(),"contactsync.txt","version:0");
 
-		CSUser user = new CSUser();
-		user.setUsername("hoangson2@gmail.com");
-		clientFactory.setUser(user);
-		clientFactory.getClientService().login(user,
-				new AsyncCallback<CSUser>() {
+		// CSUser user = new CSUser();
+		// user.setUsername("hoangson2@gmail.com");
+		// clientFactory.setUser(user);
+		addHandlerRegistration(mainView.getSyncButton().addTapHandler(
+				new TapHandler() {
 
 					@Override
-					public void onSuccess(CSUser user) {
-						clientFactory.getMainView().setText(
-								"Login OK: " + user.getUsername()
-										+ "\nVersion: " + user.getVersion());
-						clientFactory.setUser(user);
+					public void onTap(TapEvent event) {
+						((Button)clientFactory.getMainView().getSyncButton()).setDisabled(true);
+						CSUser user = clientFactory.getUser();
 
 						LightArray<String> fields = CollectionFactory
 								.<String> constructArray();
 						fields.push("*");
-						// Get all contact in phone and convert to contactList
+						// Get all contact in phone and convert
+						// to contactList
 						ContactFindOptions findOptions = new ContactFindOptions(
 								"", true);
 						clientFactory.getPhoneGap().getContacts()
@@ -95,7 +97,8 @@ public class MainActivity extends MGWTAbstractActivity {
 										str += contacts.length() + "\n";
 										CSContact csContact;
 										Contact contact;
-										// Convert to contactList
+										// Convert to
+										// contactList
 										for (int i = 0; i < contacts.length(); i++) {
 											contact = contacts.get(i);
 											if (!contact.getName()
@@ -114,16 +117,24 @@ public class MainActivity extends MGWTAbstractActivity {
 										}
 
 										str += contactList.size() + "\n";
-										// for (int i = 0; i <
-										// contactList.size(); i++) {
-										// csContact = contactList.get(i);
-										// str += csContact.getGivenName();
-										// CSPhone phone;
-										// for (int j = 0; j <
+										// for (int i =
+										// 0; i <
+										// contactList.size();
+										// i++) {
+										// csContact =
+										// contactList.get(i);
+										// str +=
+										// csContact.getGivenName();
+										// CSPhone
+										// phone;
+										// for (int j =
+										// 0; j <
 										// csContact.getPhones().size();
 										// j++) {
-										// phone = csContact.getPhones().get(j);
-										// str += " " + phone.getPhone();
+										// phone =
+										// csContact.getPhones().get(j);
+										// str += " " +
+										// phone.getPhone();
 										// }
 										// str += "\n";
 										// }
@@ -133,12 +144,16 @@ public class MainActivity extends MGWTAbstractActivity {
 
 										FileUtil fileUtil = new FileUtil();
 										FileContent fileContent = fileUtil
-												.process1(clientFactory
-														.getPhoneGap()
-														.getFile(),
-														ClientFactoryImpl.user.getUsername()+".txt",
+												.process1(
+														clientFactory
+																.getPhoneGap()
+																.getFile(),
+														ClientFactoryImpl.user
+																.getUsername()
+																+ ".txt",
 														FILE_CONTENT,
 														contactList, contacts);
+										((Button)clientFactory.getMainView().getSyncButton()).setDisabled(false);
 
 										// clientFactory.getMainView().alert(fileContent.getVersion()
 										// + "");
@@ -146,18 +161,16 @@ public class MainActivity extends MGWTAbstractActivity {
 
 									@Override
 									public void onFailure(ContactError error) {
-										// something went wrong, doh!
+										// something
+										// went wrong,
+										// doh!
 										clientFactory.getMainView().alert(
 												"Fail");
 									}
 								}, findOptions);
 					}
 
-					@Override
-					public void onFailure(Throwable caught) {
-						clientFactory.getMainView().setText("Login ERROR");
-					}
-				});
+				}));
 
 		// List contact to textbox
 
