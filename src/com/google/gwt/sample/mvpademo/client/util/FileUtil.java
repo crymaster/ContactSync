@@ -114,7 +114,7 @@ public class FileUtil {
 					.getText() + str);
 			// If file not exist, create file. If file exist, read file
 			if (!isExist) {
-				FileCallback3 fileCallback = new FileCallback3(CONTENT);
+				FileCallback3 fileCallback = new FileCallback3(CONTENT, FILE, FILE_NAME);
 				ROOT.getFile(FILE_NAME, new Flags(true, false), fileCallback);
 			} else {
 				FileCallback4 fileCallback = new FileCallback4(FILE);
@@ -133,9 +133,13 @@ public class FileUtil {
 
 	public class FileCallback3 implements FileCallback<FileEntry, FileError> {
 		public String CONTENT;
+		public File FILE;
+		public String FILE_NAME;
 
-		public FileCallback3(String content) {
+		public FileCallback3(String content, File file, String fileName) {
 			CONTENT = content;
+			FILE = file;
+			FILE_NAME = fileName;
 		}
 
 		@Override
@@ -160,6 +164,10 @@ public class FileUtil {
 						}
 					});
 					writer.write(CONTENT);
+					FileCallback1 fileCallback = new FileCallback1(FILE, FILE_NAME, CONTENT);
+					// Access to file system
+					FILE.requestFileSystem(FileSystem.LocalFileSystem_PERSISTENT, 0,
+							fileCallback);
 				}
 
 				@Override
